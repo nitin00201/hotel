@@ -10,7 +10,6 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-//own module
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
 
@@ -28,7 +27,6 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(userRouter);
 app.use("/admin" ,adminRouter);
 
-// app.get("/",(req,res))
 app.get("/contact",(req,res)=>{
   res.render("contact");
 })

@@ -1,9 +1,7 @@
-//moduler 
 var mysql = require('mysql');
 
 
 
-//authentication check
 exports.authentication = (req, res, next) => {
 
    if (req.session.mail != undefined) {
@@ -14,7 +12,6 @@ exports.authentication = (req, res, next) => {
    }
 }
 
-// show the home page
 exports.getHome = (req, res, next) => {
 
    if (req.session.mail != undefined) {
@@ -25,12 +22,10 @@ exports.getHome = (req, res, next) => {
    }
 }
 
-//show the login page
 exports.getLogin = (req, res, next) => {
    res.render('user/loginAccount', { user: "", msg: [], err: [] });
 }
 
-//post page of login
 exports.postLogin = (req, res, next) => {
 
    var connectDB = mysql.createConnection({
@@ -47,7 +42,7 @@ exports.postLogin = (req, res, next) => {
 
 
    connectDB.query(data, (err, result) => {
-      if (err) throw err; // show if any error have
+      if (err) throw err; 
       else {
          if (result.length) {
             req.session.mail = result[0].email;
@@ -63,12 +58,10 @@ exports.postLogin = (req, res, next) => {
 }
 
 
-// show create account page
 exports.getCreateAccount = (req, res, next) => {
    res.render('user/createAccount', { user: "", msg: [], err: [] })
 }
 
-//get data from user for create account
 exports.postCreateAccount = (req, res, next) => {
 
    var connectDB = mysql.createConnection({
@@ -81,7 +74,7 @@ exports.postCreateAccount = (req, res, next) => {
    var p1 = req.body.pass;
    var p2 = req.body.con_pass;
 
-   if (p1 != p2) { // if password doesn't match 
+   if (p1 != p2) { 
       return res.render("user/createAccount", { user: "", msg: [], err: ["Password Doesn't Match"] })
    }
 
@@ -89,22 +82,19 @@ exports.postCreateAccount = (req, res, next) => {
       " VALUES ( '" + req.body.name + "' ,'" + req.body.mail + "','" + req.body.phone + "','" + p1 + "')";
 
    connectDB.query(data, (err, result) => {
-      if (err) throw err;// if db has error, show that 
+      if (err) throw err; 
       else {
          res.render('user/loginAccount', { user: "", msg: ["Account Create Successfuly"], err: [] }); //show login page
       }
    })
 }
 
-//get request for category
 exports.getCategory = (req, res, next) => {
 
    res.render('user/category', { user: req.session.mail });
 }
 
-//post request of category
 exports.postCategory = (req, res, next) => {
-   //console.log(req.body);
    var connectDB = mysql.createConnection({
       host: "localhost",
       user: "root",
@@ -119,27 +109,22 @@ exports.postCategory = (req, res, next) => {
       " AND available > 0";
 
    connectDB.query(data, (err, result) => {
-      if (err) throw err; //show if error found
+      if (err) throw err;
       else {
-         //console.log(result);
          return res.render('user/showCategory', { user: req.session.mail, rooms: result })
       }
    })
 
 }
 
-// get booking data 
 exports.postBooking = (req, res, next) => {
-   // console.log(req.body);
 
    res.render('user/bookingConfirm.ejs', { user: req.session.mail, name: req.body.name, type: req.body.type, cost: req.body.cost });
 }
 
-//post status request
 
 exports.postStatus = (req, res, next) => {
 
-   //console.log(req.body);
    var connectDB = mysql.createConnection({
       host: "localhost",
       user: "root",
@@ -147,7 +132,6 @@ exports.postStatus = (req, res, next) => {
       database: "hotel"
    });
    var date = req.body.date;
-   //console.log(date)
    data = "INSERT INTO bookingstatus " +
       " VALUES ('" + req.session.mail + "','" + req.body.name + "','" + req.body.type + "','" + req.body.roomWant + "','" + 0 + "','" + date + "')"
 
@@ -171,7 +155,6 @@ exports.postStatus = (req, res, next) => {
 }
 
 
-//get status
 exports.getShowStatus = (req, res, next) => {
 
    var connectDB = mysql.createConnection({
@@ -205,9 +188,7 @@ exports.getShowStatus = (req, res, next) => {
 }
 
 
-//delete booking request
 exports.deleteBooking =(req,res,next)=>{
-   //console.log(req.body);
    var connectDB = mysql.createConnection({
       host: "localhost",
       user: "root",
@@ -231,7 +212,6 @@ exports.deleteBooking =(req,res,next)=>{
 }
 
 
-//show contact page
 exports.getContact =(req,res,next)=>{
    if(req.session.mail== undefined){
       res.render('user/contact', { user: "" });
@@ -242,7 +222,6 @@ exports.getContact =(req,res,next)=>{
    
 }
 
-//logout
 exports.logout = (req, res, next) => {
    req.session.destroy();
    res.render('user/home', { user: "" });
